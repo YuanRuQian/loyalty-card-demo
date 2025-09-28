@@ -1,5 +1,7 @@
 # loyalty-card-demo
 
+![demo.gif](./demo.gif)
+
 - Frontend: React + Apollo Client (queries/mutations, live dashboard UI).
 
 - Backend: Node.js + Express + Apollo Server, connected to MongoDB (remote cluster like Atlas).
@@ -19,3 +21,4 @@ A customer loyalty dashboard for store managers.
 - They get real-time updates on balances (via GraphQL subscriptions).
 
 - There’s also a REST API for legacy clients to fetch a single user’s balance.
+
