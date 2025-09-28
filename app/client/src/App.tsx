@@ -46,6 +46,8 @@ type PointsUpdatedData = {
   };
 };
 
+
+
 const PointsWatcher = ({ id }: { id: string }) => {
   const { data } = useSubscription<PointsUpdatedData>(POINTS_UPDATED, {
     variables: { id },
@@ -53,15 +55,20 @@ const PointsWatcher = ({ id }: { id: string }) => {
 
   if (!data) return null;
 
-  return <p>🔄 Live Update: {data.pointsUpdated.points} points</p>;
+  return (
+    <p className="text-sm text-blue-600 mt-1">
+      🔄 Live Update:{" "}
+      <span className="font-bold">{data.pointsUpdated.points}</span> points
+    </p>
+  );
 };
 
 const Dashboard = () => {
-  const { loading, data } = useQuery(GET_CUSTOMERS)
-  const [addPoints] = useMutation(ADD_POINTS)
+  const { loading, data } = useQuery(GET_CUSTOMERS);
+  const [addPoints] = useMutation(ADD_POINTS);
 
   if (loading) {
-    return <h1>Loading...</h1>
+    return <h1 className="text-xl font-semibold">Loading...</h1>;
   }
 
   const customers = (data as { customers: Customer[] } || {}).customers || [];
@@ -69,29 +76,41 @@ const Dashboard = () => {
   console.log('data: ', data, 'customers: ', customers)
 
   return (
-    <>
-      <h1>Loyalty Card Dashboard</h1>
-      {customers.map((c: Customer) => (
-        <div key={c.id as React.Key}>
-          {c.name} - {c.points.toString()} points
-          <button
-            onClick={() =>
-              addPoints({ variables: { id: c.id, amount: 50 } })
-            }
+    <div className="min-h-screen bg-gray-50 flex flex-col items-center py-10">
+      <h1 className="text-3xl font-bold text-gray-800 mb-6">
+        Loyalty Card Dashboard
+      </h1>
+      <div className="grid gap-4 w-full max-w-3xl">
+        {customers.map((c: Customer) => (
+          <div
+            key={c.id as React.Key}
+            className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 flex justify-between items-center"
           >
-            Add 50 Points
-          </button>
-          <PointsWatcher id={c.id.toString()} />
-        </div>
-      ))}
-    </>
+            <div>
+              <p className="text-xl font-semibold text-gray-800">{c.name}</p>
+              <p className="text-gray-500">{c.points.toString()} points</p>
+              <PointsWatcher id={c.id as string} />
+            </div>
+            <button
+              onClick={() => addPoints({ variables: { id: c.id, amount: 50 } })}
+              className="px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 shadow-md hover:shadow-lg transition"
+            >
+              ➕ Add 50 Points
+            </button>
+          </div>
+
+        ))}
+      </div>
+    </div>
   );
-}
+};
 
 const App = () => {
-  return <ApolloProvider client={client}>
-    <Dashboard />
-  </ApolloProvider>
-}
+  return (
+    <ApolloProvider client={client}>
+      <Dashboard />
+    </ApolloProvider>
+  );
+};
 
-export default App
+export default App;
