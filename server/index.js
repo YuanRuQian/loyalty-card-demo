@@ -16,7 +16,6 @@ if (!mongoUri) {
 
 const app = express();
 
-// Example REST endpoint
 app.get('/api/customer/:id', async (req, res) => {
     try {
         const consumer = await Customer.findById(req.params.id);
@@ -31,16 +30,16 @@ app.get('/api/customer/:id', async (req, res) => {
 
 async function start() {
     try {
-        // Connect to MongoDB via Mongoose
-        await mongoose.connect(mongoUri);
+        await mongoose.connect(mongoUri, {
+            dbName: "test",
+        });
+
         console.log("✅ Connected to MongoDB Atlas via Mongoose");
 
-        // Create Apollo Server
         const server = new ApolloServer({ typeDefs, resolvers });
         await server.start();
         server.applyMiddleware({ app });
 
-        // Start Express server
         app.listen(4000, () => {
             console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`);
         });

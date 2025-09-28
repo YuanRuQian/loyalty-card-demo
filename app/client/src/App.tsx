@@ -66,6 +66,8 @@ const Dashboard = () => {
 
   const customers = (data as { customers: Customer[] } || {}).customers || [];
 
+  console.log('data: ', data, 'customers: ', customers)
+
   return (
     <>
       <h1>Loyalty Card Dashboard</h1>

@@ -5,22 +5,24 @@ const pubsub = new PubSub()
 
 export const resolvers = {
     Query: {
-        customers: () => Customer.find(),
-        customer: (_, { id }) => Customer.findById(id)
+        customers: async () => {
+            const docs = await Customer.find(); // ✅ works too
+            return docs;
+        }
     },
     Mutation: {
         addPoints: async (_, { id, amount }) => {
-            const customer = await Customer.findById(id)
-            customer.points += amount
-            await customer.save()
-
-            pubsub.publish("POINTS_UPDATED", { pointsUpdated: customer })
-            return customer
-        }
+            const customer = await Customer.findById(id);
+            if (!customer) throw new Error("Customer not found");
+            customer.points += amount;
+            await customer.save();
+            return customer;
+        },
     },
     Subscription: {
         pointsUpdated: {
-            subscribe: (_, { id }) => { pubsub.asyncIterableIterator(["POINTS_UPDATED"]) }
-        }
-    }
-}
+            subscribe: (_, { id }, { pubsub }) =>
+                pubsub.asyncIterator(`POINTS_UPDATED_${id}`),
+        },
+    },
+};
