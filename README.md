@@ -22,3 +22,29 @@ A customer loyalty dashboard for store managers.
 
 - There’s also a REST API for legacy clients to fetch a single user’s balance.
 
+## How to Run the Project
+
+### 1. Configure Environment Variables
+
+In the `server` folder, create a `.env.config` file with your MongoDB Atlas connection string:
+
+```env
+ATLAS_API=[your Atlas Mongoose connection URI]
+```
+
+### 2. Start the Backend (Server)
+
+```bash
+cd server
+npm install
+npm run start
+```
+
+### 3. Start the Frontend (Client)
+
+```bash
+cd app/client
+npm install
+npm run start
+```
+
